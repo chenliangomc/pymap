@@ -18,10 +18,9 @@ class AppendCommand(ClientCommand):
         subparser = subparsers.add_parser(
             'append', description=__doc__,
             help='append a message to a mailbox')
-        subparser.add_argument('--mailbox', default='INBOX',
-                               help='the mailbox name (default: INBOX)')
+        subparser.add_argument('--mailbox',  help='the mailbox name')
         subparser.add_argument('--timestamp', type=float, metavar='SECONDS',
-                               help='the message timestamp')
+                               help='the message timestamp (defualt: now)')
         subparser.add_argument('--data', type=FileType('rb'), metavar='FILE',
                                default=sys.stdin.buffer,
                                help='the message data (default: stdin)')

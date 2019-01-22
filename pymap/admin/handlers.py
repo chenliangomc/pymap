@@ -47,6 +47,7 @@ class GrpcHandlers(AdminBase):
         from .grpc.admin_pb2 import AppendRequest, AppendResponse, \
             USER_NOT_FOUND, MAILBOX_NOT_FOUND
         request: AppendRequest = await stream.recv_message()
+        mailbox = request.mailbox or 'INBOX'
         flag_set = frozenset(Flag(flag) for flag in request.flags)
         when = datetime.fromtimestamp(request.when, timezone.utc)
         append_msg = AppendMessage(request.data, flag_set, when,
@@ -54,7 +55,7 @@ class GrpcHandlers(AdminBase):
         try:
             session = await self._login_as(request.user)
             append_uid, _ = await session.append_messages(
-                request.mailbox, [append_msg])
+                mailbox, [append_msg])
         except InvalidAuth:
             resp = AppendResponse(result=USER_NOT_FOUND)
         except MailboxNotFound:
